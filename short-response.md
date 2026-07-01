@@ -5,10 +5,10 @@
 The following code logs `undefined` in the second `.then()`. Identify the bug and fix it.
 
 ```js
-fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
+fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
   .then((response) => {
     if (!response.ok) throw Error(`Fetch failed.`);
-    const readingPromise = response.json();
+    return response.json();
   })
   .then((data) => {
     console.log(data); // undefined!
@@ -16,15 +16,13 @@ fetch('https://pokeapi.co/api/v2/pokemon/pikachu')
   .catch((error) => console.error(error.message));
 ```
 
-**Your Answer:**
-
+**The bug is that response.json() is created but not returned. Since nothing is returned from the first .then(), the next .then() receives undefined.**
 
 ## Question 2: Development Servers and CORS
 
 A student opens their `index.html` file directly in the browser (using the `file://` protocol). Their `<script type="module">` tag and `fetch()` call both fail. Explain why, and what they should do instead.
 
-**Your Answer:**
-
+**Opening index.html directly uses the file:// protocol, which does not run the project through a real development server. ES modules and some fetch() requests can fail because the browser treats the file as having an invalid or unsafe origin. Instead they should use a vite development server and open the local server URL.**
 
 ## Question 3: The `fetch` Response Object
 
@@ -35,9 +33,7 @@ const response = await fetch(url);
 const data = await response.json();
 ```
 
-**Your Answer:**
-
-
+**We check response.ok because fetch() does not automatically fail for bad HTTP responses like 404 Not Found or 500 Server Error. .catch() usually only catches network errors, CORS errors, or errors thrown manually. So without checking response.ok, the code might still try to read a failed response as if it worked.**
 
 ## Question 4: Async/Await Conversion
 
@@ -45,40 +41,41 @@ Rewrite the following `.then()`-based code using `async`/`await` with `try`/`cat
 
 ```js
 const getJoke = () => {
-  return fetch('https://v2.jokeapi.dev/joke/Programming?type=twopart')
-    .then((response) => {
-      if (!response.ok) throw Error(`Fetch failed. ${response.status}`);
-      return response.json();
-    })
-    .then((data) => {
-      return { data, error: null };
-    })
-    .catch((error) => {
-      return { data: null, error };
-    });
-};
+  try{
+    const response= await fetch("https://v2.jokeapi.dev/joke/Programming?type=twopart");
+    if (!response.ok){
+      throw Error(`Fetch failed. ${response.status}`);
+    }
+    const data = await response.json()
+    return {
+      data: data,
+      error: null,
+    }
+  } catch(error) {
+    return {
+      data: data,
+      error: null,
+    }
+  }
+}
 ```
 
 **Your Answer:**
-
-
 
 ## Question 5: `event.preventDefault()` and Form Handling
 
 A student writes a form handler but the data never displays. Their code:
 
 ```js
-form.addEventListener('submit', (event) => {
+form.addEventListener("submit", (event) => {
   const name = form.elements.name.value;
-  document.querySelector('#output').textContent = name;
+  document.querySelector("#output").textContent = name;
 });
 ```
 
 What is wrong? What happens when they click submit, and how do they fix it?
 
-**Your Answer:**
-
-
+**The problem is that the form’s default submit behavior is not stopped. When the student clicks submit, the browser reloads the page. Since the page reloads, the displayed data disappears right away. They need to call event.preventDefault() at the start of the submit handler.**
 
 ## Question 6: Putting It All Together
 
@@ -95,5 +92,4 @@ The steps below describe how to build a form that fetches Pokemon data from `htt
 - I. Reset the form with `form.reset()`
 - J. Create the HTML form with a name input and output elements for displaying results
 
-**Your Answer:**
-
+**J, E, B, G, H, C, A, D, I, F**

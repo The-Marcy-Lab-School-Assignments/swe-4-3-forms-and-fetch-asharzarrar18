@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Pokemon!</title>
+  </head>
+
+  <body>
+    <h1>Pokemon!</h1>
+
+    <p id="error"></p>
+    <p id="success"></p>
+
+    <form id="capture-form">
+      <h2>Capture a Pokemon</h2>
+
+      <div>
+        <label for="name">Name</label>
+        <input id="name" name="name" type="text" />
+      </div>
+
+      <div>
+        <label for="types">Types</label>
+        <input id="types" name="types" type="text" />
+      </div>
+
+      <div>
+        <label for="isFavorite">Favorite?</label>
+        <input id="isFavorite" name="isFavorite" type="checkbox" />
+      </div>
+
+      <button type="submit">Capture Pokemon</button>
+    </form>
+
+    <h2>Discovered Pokemon</h2>
+
+    <button id="discover-button">Find New Pokemon</button>
+
+    <ul id="discovered-list"></ul>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
