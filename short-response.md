@@ -22,7 +22,7 @@ fetch("https://pokeapi.co/api/v2/pokemon/pikachu")
 
 A student opens their `index.html` file directly in the browser (using the `file://` protocol). Their `<script type="module">` tag and `fetch()` call both fail. Explain why, and what they should do instead.
 
-**Opening index.html directly uses the file:// protocol, which does not run the project through a real development server. ES modules and some fetch() requests can fail because the browser treats the file as having an invalid or unsafe origin. Instead they should use a vite development server and open the local server URL.**
+**Opening index.html directly uses the file:// protocol, which does not run the project through a real development server. ES modules and some fetch() requests can fail because the browser treats files opened with file:// as having an invalid or unique origin. ES modules follow strict same-origin and CORS rules, so the browser may block module imports or requests to other origins. Instead, they should use a Vite development server and open the local server URL.**
 
 ## Question 3: The `fetch` Response Object
 
@@ -41,26 +41,47 @@ Rewrite the following `.then()`-based code using `async`/`await` with `try`/`cat
 
 ```js
 const getJoke = () => {
-  try{
-    const response= await fetch("https://v2.jokeapi.dev/joke/Programming?type=twopart");
-    if (!response.ok){
-      throw Error(`Fetch failed. ${response.status}`);
-    }
-    const data = await response.json()
-    return {
-      data: data,
-      error: null,
-    }
-  } catch(error) {
-    return {
-      data: data,
-      error: null,
-    }
-  }
-}
+  return fetch("https://v2.jokeapi.dev/joke/Programming?type=twopart")
+    .then((response) => {
+      if (!response.ok) throw Error(`Fetch failed. ${response.status}`);
+      return response.json();
+    })
+    .then((data) => {
+      return { data, error: null };
+    })
+    .catch((error) => {
+      return { data: null, error };
+    });
+};
 ```
 
-**Your Answer:**
+**Your Answer: This uses async so await can be used inside the function. The try block handles the fetch and JSON conversion, while the catch block handles any errors and returns data: null with the error.**
+
+```js
+const getJoke = async () => {
+  try {
+    const response = await fetch(
+      "https://v2.jokeapi.dev/joke/Programming?type=twopart",
+    );
+
+    if (!response.ok) {
+      throw Error(`Fetch failed. ${response.status}`);
+    }
+
+    const data = await response.json();
+
+    return {
+      data: data,
+      error: null,
+    };
+  } catch (error) {
+    return {
+      data: null,
+      error: error,
+    };
+  }
+};
+```
 
 ## Question 5: `event.preventDefault()` and Form Handling
 
@@ -92,4 +113,4 @@ The steps below describe how to build a form that fetches Pokemon data from `htt
 - I. Reset the form with `form.reset()`
 - J. Create the HTML form with a name input and output elements for displaying results
 
-**J, E, B, G, H, C, A, D, I, F**
+**J, E, B, G, H, C, A, D, F, I**
